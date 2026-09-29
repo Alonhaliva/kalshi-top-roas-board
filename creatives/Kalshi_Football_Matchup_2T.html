@@ -1,0 +1,139 @@
+<!DOCTYPE html><html lang="en"><head><script src="mraid.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><title>Kalshi — Who Takes the Opener?</title>
+<style>
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+  html,body{ width:100%; height:100%; overflow:hidden; background:#01201A;
+    font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:#fff; -webkit-user-select:none; user-select:none; }
+  #stage{ position:absolute; top:0; left:0; right:0; bottom:0;
+    display:-webkit-box; display:-webkit-flex; display:flex; -webkit-box-align:center; -webkit-align-items:center; align-items:center; -webkit-box-pack:center; -webkit-justify-content:center; justify-content:center;
+    background:radial-gradient(circle at 50% 16%, rgba(0,221,148,0.20), rgba(0,221,148,0) 58%),#01201A; touch-action:manipulation; overflow:hidden; }
+  #panel{ position:relative; width:100%; max-width:470px; margin:0 auto; padding:5% 7% 4%;
+    display:-webkit-box; display:-webkit-flex; display:flex; -webkit-box-orient:vertical; -webkit-flex-direction:column; flex-direction:column; -webkit-box-align:center; -webkit-align-items:center; align-items:center; text-align:center; }
+  #logo{ width:88px; height:auto; margin:0 0 10px; display:block; } #logo path{ fill:#00DD94; }
+  .tag{ font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#00DD94; font-weight:800; margin:0 0 6px; }
+  h1{ font-size:24px; line-height:1.2; font-weight:800; margin:0 0 4px; color:#fff; }
+  .sub{ font-size:12px; color:#86b8a6; margin:0 0 18px; }
+
+  .vs{ width:100%; display:-webkit-box; display:-webkit-flex; display:flex; -webkit-box-align:stretch; -webkit-align-items:stretch; align-items:stretch; gap:12px; position:relative; }
+  .team{ -webkit-box-flex:1; -webkit-flex:1; flex:1; cursor:pointer; border-radius:18px; overflow:hidden; position:relative;
+    background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.12); border-bottom:4px solid rgba(255,255,255,0.12);
+    -webkit-transition:-webkit-transform .12s ease, border-color .15s, background .15s; transition:transform .12s ease, border-color .15s, background .15s; }
+  .team:active{ -webkit-transform:scale(.97); transform:scale(.97); }
+  .team .bar{ height:6px; }
+  .team .body{ padding:26px 10px 24px; }
+  .team .abbr{ font-size:38px; font-weight:800; letter-spacing:.02em; line-height:1; }
+  .team .name{ font-size:13px; font-weight:700; color:#bfeede; margin-top:6px; }
+  .team .wp{ margin-top:20px; font-size:26px; font-weight:800; color:#fff; }
+  .team .wp small{ display:block; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:#6f9c8b; font-weight:800; margin-top:2px; }
+  .team.sel{ background:rgba(0,221,148,0.14); border-color:#00DD94; border-bottom-color:#00CE8E; }
+  .team.dim{ opacity:.42; }
+  .team.pulse{ -webkit-animation:tpulse 1.4s ease-in-out infinite; animation:tpulse 1.4s ease-in-out infinite; }
+  @-webkit-keyframes tpulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(0,221,148,0);} 50%{ box-shadow:0 0 0 5px rgba(0,221,148,0.16);} }
+  @keyframes tpulse{ 0%,100%{ box-shadow:0 0 0 0 rgba(0,221,148,0);} 50%{ box-shadow:0 0 0 5px rgba(0,221,148,0.16);} }
+  .vsbadge{ position:absolute; top:50%; left:50%; -webkit-transform:translate(-50%,-50%); transform:translate(-50%,-50%); z-index:3;
+    width:34px; height:34px; border-radius:50%; background:#01201A; border:1px solid rgba(0,221,148,0.4); color:#00DD94; font-size:12px; font-weight:800;
+    display:-webkit-box; display:-webkit-flex; display:flex; -webkit-box-align:center; -webkit-align-items:center; align-items:center; -webkit-box-pack:center; -webkit-justify-content:center; justify-content:center; }
+
+  #hint{ font-size:12.5px; font-weight:700; color:#4DE4B2; margin:16px 0 0; height:18px; -webkit-transition:opacity .2s; transition:opacity .2s; }
+
+  /* payout slip */
+  #slip{ width:100%; max-width:360px; margin:14px 0 0; overflow:hidden; max-height:0; opacity:0;
+    -webkit-transition:max-height .4s ease, opacity .4s ease, margin .4s ease; transition:max-height .4s ease, opacity .4s ease, margin .4s ease; }
+  #slip.show{ max-height:320px; opacity:1; }
+  .slipcard{ background:rgba(255,255,255,0.05); border:1px solid rgba(0,221,148,0.24); border-radius:16px; padding:15px 16px; }
+  .slipcard .row{ display:-webkit-box; display:-webkit-flex; display:flex; -webkit-box-align:center; -webkit-align-items:center; align-items:center; -webkit-box-pack:justify; -webkit-justify-content:space-between; justify-content:space-between; }
+  .slipcard .lab{ font-size:12px; color:#9fcab9; text-align:left; } .slipcard .lab b{ color:#fff; }
+  .slipcard .big{ font-size:30px; font-weight:800; color:#00DD94; text-shadow:0 0 24px rgba(0,221,148,0.3); }
+  .slipcard .note{ font-size:11.5px; color:#7fd9bd; margin-top:8px; text-align:left; line-height:1.4; }
+  .slipcard .note b{ color:#eafff7; }
+
+  #etag{ font-size:19px; font-weight:800; letter-spacing:.01em; text-transform:uppercase; color:#fff; margin:16px 0 0; text-align:center;
+    opacity:0; max-height:0; overflow:hidden; -webkit-transition:opacity .35s ease; transition:opacity .35s ease; }
+  #etag.show{ opacity:1; max-height:40px; }
+  #cta{-webkit-animation:ctabounce 1.5s ease-in-out infinite;animation:ctabounce 1.5s ease-in-out infinite;  display:block; width:100%; max-width:360px; margin:10px auto 0; padding:15px 30px; border:0; border-radius:999px; font-family:inherit;
+    font-weight:800; font-size:18px; color:#01201A; background:#00DD94; box-shadow:0 8px 24px rgba(0,221,148,0.35); cursor:pointer;
+    opacity:0; max-height:0; overflow:hidden; -webkit-transition:opacity .35s ease; transition:opacity .35s ease; -webkit-transform:translateZ(0); }
+  #cta.show{ opacity:1; max-height:70px; }
+  #cta:active{ -webkit-transform:scale(.97); transform:scale(.97); }
+
+  .disc{ position:absolute; left:0; right:0; bottom:12px; margin:0 auto; padding:0 20px; font-size:8px; line-height:1.4; color:#4b6b60; text-align:center; max-width:440px; }
+
+  @media (orientation:landscape){
+    #panel{ max-width:640px; padding:2.5% 6%; } #logo{ width:66px; margin-bottom:6px; } h1{ font-size:20px; } .sub{ margin-bottom:12px; }
+    .vs{ max-width:520px; } .team .abbr{ font-size:26px; } #hint{ margin-top:10px; } .disc{ display:none; }
+  }
+  @media (prefers-reduced-motion:reduce){ *{ -webkit-transition:none!important; transition:none!important; -webkit-animation:none!important; animation:none!important; } }
+@-webkit-keyframes ctabounce{0%,100%{-webkit-transform:translateY(0);}50%{-webkit-transform:translateY(-6px);}}@keyframes ctabounce{0%,100%{transform:translateY(0);box-shadow:0 8px 22px rgba(0,221,148,.45);}50%{transform:translateY(-6px);box-shadow:0 16px 34px rgba(0,221,148,.75);}}
+</style>
+</head><body><div id="stage"><div id="panel">
+  <svg id="logo" viewBox="0 0 772 226" xmlns="http://www.w3.org/2000/svg" aria-label="Kalshi"><path d="M255.677 58.1911C210.683 58.1911 183.381 78.5114 181.206 113.922H228.062C229.924 100.374 238.611 93.2917 253.814 93.2917C269.018 93.2917 277.396 100.064 277.088 110.842C276.775 119.156 271.501 122.852 258.16 124.7L238.923 127.164C195.484 132.398 175.002 148.717 175.002 177.967C175.002 207.218 195.48 226 229.611 226C251.331 226 267.776 218.302 278.017 203.522V222.61H326.422V117.924C326.422 78.5114 302.532 58.1911 255.677 58.1911ZM245.44 192.437C231.478 192.437 223.72 186.281 223.72 174.887C223.72 164.109 230.545 158.875 249.473 156.105L258.16 154.873C265.845 153.8 272.17 152.274 277.396 150.131V166.267C277.396 181.663 264.368 192.437 245.44 192.437ZM343.488 3.38607H393.135V222.61H343.488V3.38607ZM105.23 105.628L179.66 222.61H115.118L54.3009 121.934V222.61H0V3.38607H54.3009V99.102L119.464 3.38607H177.489L105.23 105.628ZM716.145 26.1705C716.145 12.0062 728.557 0 744.073 0C759.588 0 772 12.0062 772 26.1705C772 40.3347 759.588 52.3409 744.073 52.3409C728.557 52.3409 716.145 40.6407 716.145 26.1705ZM544.868 172.423C544.868 208.446 518.494 225.996 474.743 225.996C430.991 225.996 403.997 206.908 402.447 172.113H448.369C450.232 185.351 456.435 192.743 474.434 192.743C489.95 192.743 497.395 186.587 497.395 177.347C497.395 168.107 488.396 163.489 465.747 160.107C422.616 154.257 405.242 141.631 405.242 109.304C405.242 75.1293 436.582 58.1911 471.643 58.1911C509.186 58.1911 536.493 71.4293 540.218 108.688H495.225C493.054 96.9877 486.225 91.1376 471.951 91.1376C458.61 91.1376 451.161 97.2937 451.161 105.608C451.161 114.844 458.61 118.23 480.638 121.31C523.148 127.16 544.868 137.934 544.868 172.423ZM719.249 61.5771H768.896V222.61H719.249V61.5771ZM702.183 115.77V222.61H652.536V124.39C652.536 107.146 645.399 98.2197 629.884 98.2197C614.368 98.2197 603.51 108.072 603.51 127.47V222.61H553.863V3.38607H603.51V85.5617C611.32 70.1734 627.761 58.1911 651.603 58.1911C681.393 58.1911 702.179 76.9734 702.179 115.766L702.183 115.77Z"/></svg>
+  <div class="tag">Football &middot; Kickoff</div>
+  <h1>Who takes the opener?</h1>
+  <div class="sub">Seattle @ Kansas City &middot; Tap your city to trade</div>
+  <div class="vs" id="vs">
+    <div class="team" id="tA" data-side="Seattle" data-pct="43">
+      <div class="bar" style="background:#69BE28"></div>
+      <div class="body"><div class="abbr" style="color:#69BE28">SEA</div><div class="name">Seattle</div><div class="wp">43%<small>Win</small></div></div>
+    </div>
+    <div class="vsbadge">VS</div>
+    <div class="team" id="tB" data-side="Kansas City" data-pct="57">
+      <div class="bar" style="background:#E31837"></div>
+      <div class="body"><div class="abbr" style="color:#ff5a76">KC</div><div class="name">Kansas City</div><div class="wp">57%<small>Win</small></div></div>
+    </div>
+  </div>
+  <div id="hint">&#128070; Pick your city to trade</div>
+
+  <div id="slip"><div class="slipcard">
+    <div class="row"><div class="lab">If <b id="slipTeam">Seattle</b> wins, <b>$25</b> pays</div><div class="big">$<span id="slipPay">58.14</span></div></div>
+    <div class="note">Pays the <b>moment the game ends</b> &mdash; cash out anytime. That&rsquo;s a real market, not a sportsbook.</div>
+  </div></div>
+  <div id="etag">Trade on anything</div>
+  <button id="cta">Sign Up Today</button>
+</div>
+<div class="disc">Restrictions and eligibility requirements apply. Event contract trading involves significant risk and is not appropriate for everyone. Please carefully consider if it&rsquo;s appropriate for you in light of your personal financial circumstances. Prices shown are not be live and are subject to change. Certain products unavailable in some jurisdictions. Federally regulated event contract exchange, see kalshi.com/regulatory for more info. User must be 18+ to register and trade. Ad may contain AI-generated imagery.</div>
+</div>
+<script>
+/* ============================================================
+ * Kalshi — football "Who Takes the Opener?" head-to-head playable.
+ * Tap a team -> instant payout slip (resolves when the game ends)
+ * -> Trade CTA. Grounded in the client's football matchup + payout-slip
+ * concepts; fast-payout / not-a-sportsbook wedge from the videos.
+ * Interactive (never auto-plays); attract = pulsing cards + hand.
+ * MRAID 3.0, ES5. Verb: "trade", never "bet".
+ * ============================================================ */
+(function(){
+  "use strict";
+  var STORE={ ios:"https://apps.apple.com/us/app/kalshi/id1632713844",
+    android:"https://play.google.com/store/apps/details?id=com.kalshi.mobile" };
+  function platform(){ var ua=navigator.userAgent||""; if(/iPhone|iPad|iPod/i.test(ua))return "ios"; return "android"; }
+  var STAKE=25;
+  var tA=document.getElementById("tA"), tB=document.getElementById("tB"), hint=document.getElementById("hint"),
+      slip=document.getElementById("slip"), cta=document.getElementById("cta");
+  var started=false, picked=false;
+
+  function pick(el, other){
+    if(!started) return;
+    el.className="team sel"; other.className="team dim";      /* re-selectable: tap either team any time */
+    var side=el.getAttribute("data-side"), pct=parseInt(el.getAttribute("data-pct"),10);
+    document.getElementById("slipTeam").innerHTML=side;
+    document.getElementById("slipPay").innerHTML=(STAKE/(pct/100)).toFixed(2);
+    picked=true;
+    hint.innerHTML="Tap the other city to compare";
+    slip.className="show"; document.getElementById("etag").className="show"; cta.className="show";
+  }
+  tA.onclick=function(){ pick(tA,tB); };
+  tB.onclick=function(){ pick(tB,tA); };
+  cta.addEventListener("click",function(){ var url=STORE[platform()];
+    if(typeof mraid!=="undefined"&&mraid&&typeof mraid.open==="function"){ mraid.open(url); } else if(window.open){ window.open(url,"_blank"); } },false);
+
+  function startAttract(){ if(picked) return; tA.className="team pulse"; tB.className="team pulse"; hint.style.opacity="1"; }
+  function stopAttract(){ if(!picked){ tA.className="team"; tB.className="team"; } }
+  function showAd(){ if(started) return; started=true; startAttract(); }
+  function onViewableChange(v){ if(v){ started?startAttract():showAd(); } else stopAttract(); }
+  function onSdkReady(){ mraid.addEventListener("viewableChange",onViewableChange); if(mraid.isViewable()) showAd(); }
+  function boot(){ if(typeof mraid==="undefined"){ showAd(); return; }
+    if(mraid.getState()==="loading"){ mraid.addEventListener("ready",onSdkReady); } else onSdkReady(); }
+  document.addEventListener("visibilitychange",function(){ if(document.hidden) stopAttract(); else if(started&&!picked) startAttract(); },false);
+  boot();
+})();
+</script>
+</body></html>

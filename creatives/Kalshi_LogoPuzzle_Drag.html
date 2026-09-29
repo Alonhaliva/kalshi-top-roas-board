@@ -1,0 +1,254 @@
+<!DOCTYPE html><html lang="en"><head><script src="mraid.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><title>Kalshi — Complete the Puzzle</title>
+<style>
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+  html,body{ width:100%; height:100%; overflow:hidden; background:#00CE8E;
+    font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:#01201A; -webkit-user-select:none; user-select:none; }
+  #stage{ position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden;
+    background:radial-gradient(circle at 50% 38%, #12E39C, #00CE8E 72%); touch-action:none; }
+  #pbar{ position:absolute; top:0; left:0; height:5px; width:0%; background:#FFD23F; -webkit-transition:width .35s ease; transition:width .35s ease; box-shadow:0 0 10px rgba(255,210,63,.6); z-index:20; }
+  .prompt{ position:absolute; top:0; left:0; right:0; text-align:center; padding:16px 18px 0; z-index:15; }
+  .prompt .big{ font-size:19px; font-weight:800; color:#01201A; letter-spacing:-.01em; }
+  .prompt .small{ font-size:13px; font-weight:600; color:#0a3b2e; margin-top:3px; opacity:.85; }
+
+  #arena{ position:absolute; inset:0; top:0; left:0; right:0; bottom:0; }
+  #ghost{ position:absolute; opacity:.14; } #ghost path{ fill:#01201A; }
+  .slot{ position:absolute; border:2px dashed rgba(1,32,26,0.28); border-radius:10px; }
+  .slot.next{ border-color:rgba(1,32,26,0.6); -webkit-animation:slotpulse 1.2s ease-in-out infinite; animation:slotpulse 1.2s ease-in-out infinite; }
+  @-webkit-keyframes slotpulse{ 0%,100%{ background:rgba(1,32,26,0); } 50%{ background:rgba(1,32,26,0.08); } }
+  @keyframes slotpulse{ 0%,100%{ background:rgba(1,32,26,0); } 50%{ background:rgba(1,32,26,0.08); } }
+  #tray{ position:absolute; border-radius:16px; background:rgba(1,32,26,0.10); z-index:5; }
+
+  .piece{ position:absolute; cursor:grab; z-index:8; filter:drop-shadow(0 4px 8px rgba(0,0,0,0.22)); -webkit-filter:drop-shadow(0 4px 8px rgba(0,0,0,0.22)); }
+  .piece.anim{ -webkit-transition:left .5s cubic-bezier(.3,1.1,.4,1), top .5s cubic-bezier(.3,1.1,.4,1); transition:left .5s cubic-bezier(.3,1.1,.4,1), top .5s cubic-bezier(.3,1.1,.4,1); }
+  .piece.drag{ cursor:grabbing; }
+  .piece.placed{ cursor:default; filter:none; -webkit-filter:none; }
+  .piece svg{ display:block; }
+  .piece.bob{ -webkit-animation:bob 1.25s ease-in-out infinite; animation:bob 1.25s ease-in-out infinite; }
+  @-webkit-keyframes bob{ 0%,100%{ -webkit-transform:translateY(0);} 50%{ -webkit-transform:translateY(-8px);} }
+  @keyframes bob{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-8px);} }
+  #hand{ position:absolute; z-index:30; font-size:30px; line-height:1; pointer-events:none; opacity:0; filter:drop-shadow(0 2px 3px rgba(0,0,0,.35)); -webkit-filter:drop-shadow(0 2px 3px rgba(0,0,0,.35)); }
+
+  #done{ position:absolute; left:0; right:0; bottom:0; top:0; display:none; z-index:9999;
+    -webkit-box-orient:vertical; -webkit-flex-direction:column; flex-direction:column; -webkit-box-align:center; -webkit-align-items:center; align-items:center; -webkit-box-pack:center; -webkit-justify-content:center; justify-content:center;
+    text-align:center; padding:0 30px; background:radial-gradient(circle at 50% 40%, rgba(18,227,156,.97), rgba(0,206,142,.99)); }
+  #done.show{ display:-webkit-box; display:-webkit-flex; display:flex; }
+  #done .biglogo{ width:150px; height:auto; margin:0 0 14px; } #done .biglogo path{ fill:#01201A; }
+  .dhead{ font-size:27px; font-weight:800; color:#01201A; letter-spacing:-.01em; margin:0 0 8px; }
+  .dsub{ font-size:14px; font-weight:600; color:#0a3b2e; line-height:1.5; max-width:320px; margin:0 0 6px; }
+  .etagline{ font-size:19px; font-weight:800; letter-spacing:.01em; text-transform:uppercase; color:#01201A; margin:8px 0 2px; }
+  #cta{-webkit-animation:ctabounce 1.5s ease-in-out infinite;animation:ctabounce 1.5s ease-in-out infinite;  margin:18px auto 0; padding:15px 34px; border:0; border-radius:999px; font-family:inherit; font-weight:800; font-size:17px;
+    color:#00CE8E; background:#01201A; box-shadow:0 8px 22px rgba(1,32,26,0.3); cursor:pointer; -webkit-transition:-webkit-transform .1s; transition:transform .1s; }
+  #cta:active{ -webkit-transform:scale(.97); transform:scale(.97); }
+  .legal{ margin-top:14px; font-size:9.5px; letter-spacing:.02em; color:#0a3b2e; line-height:1.5; opacity:.75; max-width:330px; }
+  .legal b{ font-weight:800; }
+  @media (prefers-reduced-motion:reduce){ *{ -webkit-transition:none!important; transition:none!important; -webkit-animation:none!important; animation:none!important; } }
+@-webkit-keyframes ctabounce{0%,100%{-webkit-transform:translateY(0);}50%{-webkit-transform:translateY(-6px);}}@keyframes ctabounce{0%,100%{transform:translateY(0);box-shadow:0 8px 22px rgba(0,221,148,.45);}50%{transform:translateY(-6px);box-shadow:0 16px 34px rgba(0,221,148,.75);}}
+</style>
+</head><body><div id="stage">
+  <div id="pbar"></div>
+  <div class="prompt"><div class="big">Complete the puzzle</div><div class="small">Drag the pieces into the frame</div></div>
+  <div id="arena"></div>
+  <div id="hand">&#128070;</div>
+  <div id="done">
+    <svg class="biglogo" viewBox="0 0 772 226" xmlns="http://www.w3.org/2000/svg" aria-label="Kalshi"><path d="M255.677 58.1911C210.683 58.1911 183.381 78.5114 181.206 113.922H228.062C229.924 100.374 238.611 93.2917 253.814 93.2917C269.018 93.2917 277.396 100.064 277.088 110.842C276.775 119.156 271.501 122.852 258.16 124.7L238.923 127.164C195.484 132.398 175.002 148.717 175.002 177.967C175.002 207.218 195.48 226 229.611 226C251.331 226 267.776 218.302 278.017 203.522V222.61H326.422V117.924C326.422 78.5114 302.532 58.1911 255.677 58.1911ZM245.44 192.437C231.478 192.437 223.72 186.281 223.72 174.887C223.72 164.109 230.545 158.875 249.473 156.105L258.16 154.873C265.845 153.8 272.17 152.274 277.396 150.131V166.267C277.396 181.663 264.368 192.437 245.44 192.437ZM343.488 3.38607H393.135V222.61H343.488V3.38607ZM105.23 105.628L179.66 222.61H115.118L54.3009 121.934V222.61H0V3.38607H54.3009V99.102L119.464 3.38607H177.489L105.23 105.628ZM716.145 26.1705C716.145 12.0062 728.557 0 744.073 0C759.588 0 772 12.0062 772 26.1705C772 40.3347 759.588 52.3409 744.073 52.3409C728.557 52.3409 716.145 40.6407 716.145 26.1705ZM544.868 172.423C544.868 208.446 518.494 225.996 474.743 225.996C430.991 225.996 403.997 206.908 402.447 172.113H448.369C450.232 185.351 456.435 192.743 474.434 192.743C489.95 192.743 497.395 186.587 497.395 177.347C497.395 168.107 488.396 163.489 465.747 160.107C422.616 154.257 405.242 141.631 405.242 109.304C405.242 75.1293 436.582 58.1911 471.643 58.1911C509.186 58.1911 536.493 71.4293 540.218 108.688H495.225C493.054 96.9877 486.225 91.1376 471.951 91.1376C458.61 91.1376 451.161 97.2937 451.161 105.608C451.161 114.844 458.61 118.23 480.638 121.31C523.148 127.16 544.868 137.934 544.868 172.423ZM719.249 61.5771H768.896V222.61H719.249V61.5771ZM702.183 115.77V222.61H652.536V124.39C652.536 107.146 645.399 98.2197 629.884 98.2197C614.368 98.2197 603.51 108.072 603.51 127.47V222.61H553.863V3.38607H603.51V85.5617C611.32 70.1734 627.761 58.1911 651.603 58.1911C681.393 58.1911 702.179 76.9734 702.179 115.766L702.183 115.77Z"/></svg>
+    <div class="dhead">Puzzle complete!</div>
+    <div class="dsub">Trade on real-world events with Kalshi &mdash; markets, sports, weather and more.</div>
+    <div class="etagline">Trade on anything</div>
+    <button id="cta">Sign Up Today</button>
+    <div class="legal">Restrictions and eligibility requirements apply. Event contract trading involves significant risk and is not appropriate for everyone. Please carefully consider if it&rsquo;s appropriate for you in light of your personal financial circumstances. Prices shown are not be live and are subject to change. Certain products unavailable in some jurisdictions. Federally regulated event contract exchange, see kalshi.com/regulatory for more info. User must be 18+ to register and trade. Ad may contain AI-generated imagery.</div>
+  </div>
+</div>
+<script>
+/* ============================================================
+ * Kalshi — "Complete the Puzzle" jigsaw (tray + frame layout).
+ * Rebuild of Kalshi's live SensorTower puzzle creative.
+ * A REAL playable: pieces rest in an ordered tray; the USER drags
+ * each one into the framed slots to reassemble the Kalshi wordmark
+ * -> end card. It never solves itself — a looping hand + bobbing
+ * next-piece + pulsing target slot invite the drag (attract mode).
+ * MRAID 3.0, ES5. Verb: "trade", never "bet".
+ * ============================================================ */
+(function(){
+  "use strict";
+  var SVGNS="http://www.w3.org/2000/svg";
+  var STORE={ ios:"https://apps.apple.com/us/app/kalshi/id1632713844",
+    android:"https://play.google.com/store/apps/details?id=com.kalshi.mobile" };
+  function platform(){ var ua=navigator.userAgent||""; if(/iPhone|iPad|iPod/i.test(ua))return "ios"; return "android"; }
+  var WORD="M255.677 58.1911C210.683 58.1911 183.381 78.5114 181.206 113.922H228.062C229.924 100.374 238.611 93.2917 253.814 93.2917C269.018 93.2917 277.396 100.064 277.088 110.842C276.775 119.156 271.501 122.852 258.16 124.7L238.923 127.164C195.484 132.398 175.002 148.717 175.002 177.967C175.002 207.218 195.48 226 229.611 226C251.331 226 267.776 218.302 278.017 203.522V222.61H326.422V117.924C326.422 78.5114 302.532 58.1911 255.677 58.1911ZM245.44 192.437C231.478 192.437 223.72 186.281 223.72 174.887C223.72 164.109 230.545 158.875 249.473 156.105L258.16 154.873C265.845 153.8 272.17 152.274 277.396 150.131V166.267C277.396 181.663 264.368 192.437 245.44 192.437ZM343.488 3.38607H393.135V222.61H343.488V3.38607ZM105.23 105.628L179.66 222.61H115.118L54.3009 121.934V222.61H0V3.38607H54.3009V99.102L119.464 3.38607H177.489L105.23 105.628ZM716.145 26.1705C716.145 12.0062 728.557 0 744.073 0C759.588 0 772 12.0062 772 26.1705C772 40.3347 759.588 52.3409 744.073 52.3409C728.557 52.3409 716.145 40.6407 716.145 26.1705ZM544.868 172.423C544.868 208.446 518.494 225.996 474.743 225.996C430.991 225.996 403.997 206.908 402.447 172.113H448.369C450.232 185.351 456.435 192.743 474.434 192.743C489.95 192.743 497.395 186.587 497.395 177.347C497.395 168.107 488.396 163.489 465.747 160.107C422.616 154.257 405.242 141.631 405.242 109.304C405.242 75.1293 436.582 58.1911 471.643 58.1911C509.186 58.1911 536.493 71.4293 540.218 108.688H495.225C493.054 96.9877 486.225 91.1376 471.951 91.1376C458.61 91.1376 451.161 97.2937 451.161 105.608C451.161 114.844 458.61 118.23 480.638 121.31C523.148 127.16 544.868 137.934 544.868 172.423ZM719.249 61.5771H768.896V222.61H719.249V61.5771ZM702.183 115.77V222.61H652.536V124.39C652.536 107.146 645.399 98.2197 629.884 98.2197C614.368 98.2197 603.51 108.072 603.51 127.47V222.61H553.863V3.38607H603.51V85.5617C611.32 70.1734 627.761 58.1911 651.603 58.1911C681.393 58.1911 702.179 76.9734 702.179 115.766L702.183 115.77Z";
+
+  var stage=document.getElementById("stage"), arena=document.getElementById("arena"),
+      pbar=document.getElementById("pbar"), doneEl=document.getElementById("done"), cta=document.getElementById("cta"),
+      hand=document.getElementById("hand");
+  var S,M,R,BOARD,TX,TY,trayX,trayY,traySpan;
+  var pieces=[], placedCount=0, TOTAL=4, active=null, zTop=50, started=false, interacted=false, attractT=null;
+
+  function edge(dir,t,x0,y0,x1,y1,r){
+    if(t===0) return "L"+x1+" "+y1+" ";
+    var mx=(x0+x1)/2, my=(y0+y1)/2, out=(t>0?1:0);
+    if(dir==="T") return "L"+(mx-r)+" "+y0+" A"+r+" "+r+" 0 0 "+(out?0:1)+" "+(mx+r)+" "+y0+" L"+x1+" "+y1+" ";
+    if(dir==="R") return "L"+x0+" "+(my-r)+" A"+r+" "+r+" 0 0 "+(out?0:1)+" "+x0+" "+(my+r)+" L"+x1+" "+y1+" ";
+    if(dir==="B") return "L"+(mx+r)+" "+y0+" A"+r+" "+r+" 0 0 "+(out?0:1)+" "+(mx-r)+" "+y0+" L"+x1+" "+y1+" ";
+    return "L"+x0+" "+(my+r)+" A"+r+" "+r+" 0 0 "+(out?0:1)+" "+x0+" "+(my-r)+" L"+x1+" "+y1+" ";
+  }
+  function edges(row,col){ return { T: row===0?0:-1, R: col===1?0:1, B: row===1?0:1, L: col===0?0:-1 }; }
+  function piecePath(row,col,r){
+    var a=M, b=M+S, e=edges(row,col);
+    return "M"+a+" "+a+" "+edge("T",e.T,a,a,b,a,r)+edge("R",e.R,b,a,b,b,r)+edge("B",e.B,b,b,a,b,r)+edge("L",e.L,a,b,a,a,r)+"Z";
+  }
+  function makePieceEl(row,col){
+    var canvas=S+2*M;
+    var wrap=document.createElement("div"); wrap.className="piece";
+    wrap.style.width=canvas+"px"; wrap.style.height=canvas+"px";
+    var svg=document.createElementNS(SVGNS,"svg"); svg.setAttribute("width",canvas); svg.setAttribute("height",canvas); svg.setAttribute("viewBox","0 0 "+canvas+" "+canvas);
+    var cid="cp_"+row+"_"+col+"_"+Math.floor(Math.random()*99999);
+    var defs=document.createElementNS(SVGNS,"defs");
+    var clip=document.createElementNS(SVGNS,"clipPath"); clip.setAttribute("id",cid);
+    var cpp=document.createElementNS(SVGNS,"path"); cpp.setAttribute("d",piecePath(row,col,R)); clip.appendChild(cpp); defs.appendChild(clip); svg.appendChild(defs);
+    var g=document.createElementNS(SVGNS,"g"); g.setAttribute("clip-path","url(#"+cid+")");
+    var bg=document.createElementNS(SVGNS,"rect"); bg.setAttribute("x",0); bg.setAttribute("y",0); bg.setAttribute("width",canvas); bg.setAttribute("height",canvas); bg.setAttribute("fill","#0CD089"); g.appendChild(bg);
+    var Wm=BOARD*0.9, Hm=Wm*226/772, wmX=(BOARD-Wm)/2, wmY=(BOARD-Hm)/2;
+    var wg=document.createElementNS(SVGNS,"g"); wg.setAttribute("transform","translate("+(wmX-col*S+M)+" "+(wmY-row*S+M)+") scale("+(Wm/772)+")");
+    var wp=document.createElementNS(SVGNS,"path"); wp.setAttribute("d",WORD); wp.setAttribute("fill","#01201A"); wg.appendChild(wp); g.appendChild(wg);
+    svg.appendChild(g);
+    var stroke=document.createElementNS(SVGNS,"path"); stroke.setAttribute("d",piecePath(row,col,R)); stroke.setAttribute("fill","none"); stroke.setAttribute("stroke","rgba(255,255,255,0.6)"); stroke.setAttribute("stroke-width","2"); svg.appendChild(stroke);
+    wrap.appendChild(svg); return wrap;
+  }
+  function setPos(p,x,y){ p.el.style.left=x+"px"; p.el.style.top=y+"px"; p.x=x; p.y=y; }
+  function anim(p,x,y,cb){ p.el.className="piece anim"+(p.placed?" placed":""); setPos(p,x,y); if(cb) setTimeout(cb,520); }
+
+  function layout(){
+    var vw=stage.clientWidth||window.innerWidth, vh=stage.clientHeight||window.innerHeight;
+    /* S bound by width so the 4-piece tray row fits, and by height for the whole block */
+    S=Math.floor(Math.max(50, Math.min(96, Math.min(vw/5.3, vh/6.6))));
+    M=Math.round(S*0.18); R=Math.round(S*0.17); BOARD=2*S;
+    var gapx=Math.round(S*0.24), rowW=4*S+3*gapx;
+    var blockH=2*S + Math.round(S*0.85) + S; /* frame + gap + tray */
+    TX=Math.round((vw-BOARD)/2);
+    TY=Math.round(Math.max(100, (vh-blockH)/2 + 6));
+    trayX=Math.round((vw-rowW)/2); trayY=Math.round(TY+BOARD+S*0.85); traySpan=rowW;
+    /* keep tray on-screen */
+    if(trayY+S+M>vh-8){ trayY=vh-8-S-M; }
+    arena.innerHTML=""; pieces=[]; placedCount=0; pbar.style.width="0%";
+
+    /* ghost target logo */
+    var ghost=document.createElementNS(SVGNS,"svg"); ghost.setAttribute("id","ghost");
+    var Wm=BOARD*0.9, Hm=Wm*226/772;
+    ghost.setAttribute("width",Wm); ghost.setAttribute("height",Hm); ghost.setAttribute("viewBox","0 0 772 226");
+    ghost.style.left=(TX+(BOARD-Wm)/2)+"px"; ghost.style.top=(TY+(BOARD-Hm)/2)+"px";
+    var gp=document.createElementNS(SVGNS,"path"); gp.setAttribute("d",WORD); ghost.appendChild(gp); arena.appendChild(ghost);
+
+    /* slots */
+    var cells=[[0,0],[0,1],[1,0],[1,1]];
+    for(var s=0;s<cells.length;s++){ var sl=document.createElement("div"); sl.className="slot"; sl.setAttribute("data-slot",s);
+      sl.style.left=(TX+cells[s][1]*S+3)+"px"; sl.style.top=(TY+cells[s][0]*S+3)+"px"; sl.style.width=(S-6)+"px"; sl.style.height=(S-6)+"px"; arena.appendChild(sl); }
+
+    /* tray platform */
+    var tray=document.createElement("div"); tray.id="tray";
+    tray.style.left=(trayX-M*0.5)+"px"; tray.style.top=(trayY-M*0.5)+"px"; tray.style.width=(rowW+M)+"px"; tray.style.height=(S+M)+"px"; arena.appendChild(tray);
+
+    /* pieces: build in cell order, then assign to shuffled tray columns */
+    var order=[0,1,2,3]; for(var i=order.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=order[i]; order[i]=order[j]; order[j]=t; }
+    for(var c=0;c<cells.length;c++){
+      var row=cells[c][0], col=cells[c][1];
+      var el=makePieceEl(row,col);
+      var p={ el:el, row:row, col:col, placed:false,
+              slotX: TX+col*S-M, slotY: TY+row*S-M };
+      arena.appendChild(el); pieces.push(p);
+    }
+    /* tray home = shuffled column position for each piece */
+    for(var k=0;k<pieces.length;k++){
+      var colPos=order[k];
+      pieces[k].trayX = trayX + colPos*(S+gapx) - M;
+      pieces[k].trayY = trayY - M;
+      setPos(pieces[k], pieces[k].trayX, pieces[k].trayY);
+      pieces[k].el.style.zIndex=8+k;
+      bindPiece(pieces[k]);
+    }
+    markNextSlot();
+  }
+
+  function nextUnplaced(){ for(var i=0;i<pieces.length;i++){ if(!pieces[i].placed) return pieces[i]; } return null; }
+  function markNextSlot(){
+    var slots=arena.querySelectorAll(".slot");
+    for(var i=0;i<slots.length;i++){ slots[i].className="slot"; }
+    var p=nextUnplaced(); if(p){ var idx=p.row*2+p.col; if(slots[idx]) slots[idx].className="slot next"; }
+  }
+
+  /* ---- attract mode: hand glides from the next tray piece to its slot; that piece bobs.
+     Purely a hint — it NEVER moves a piece. First touch cancels it. ---- */
+  function clearBob(){ for(var i=0;i<pieces.length;i++){ if(!pieces[i].placed && pieces[i].el.className==="piece bob") pieces[i].el.className="piece"; } }
+  function stopAttract(){ if(attractT){ clearTimeout(attractT); attractT=null; } if(hand) hand.style.opacity="0"; clearBob(); }
+  function startAttract(){
+    stopAttract();
+    if(interacted) return;
+    var p=nextUnplaced(); if(!p) return;
+    if(p.el.className==="piece") p.el.className="piece bob";
+    markNextSlot();
+    handCycle(p);
+  }
+  function handCycle(p){
+    if(interacted || p.placed || !hand) return;
+    var CW=S+2*M, fx=p.trayX+CW*0.5, fy=p.trayY+CW*0.45, tx=p.slotX+CW*0.5, ty=p.slotY+CW*0.45;
+    hand.style.transition="none"; hand.style.left=fx+"px"; hand.style.top=fy+"px"; hand.style.opacity="0";
+    void hand.offsetWidth; /* reflow so the next transition runs */
+    hand.style.transition="opacity .25s ease, left 1s ease .2s, top 1s ease .2s";
+    hand.style.opacity="0.95";
+    setTimeout(function(){ if(!interacted){ hand.style.left=tx+"px"; hand.style.top=ty+"px"; } }, 60);
+    setTimeout(function(){ hand.style.transition="opacity .35s ease"; hand.style.opacity="0"; }, 1300);
+    attractT=setTimeout(function(){ handCycle(p); }, 1950);
+  }
+
+  function place(p){
+    p.placed=true; p.el.className="piece anim placed"; setPos(p,p.slotX,p.slotY); p.el.style.zIndex=4;
+    placedCount++; pbar.style.width=(placedCount/TOTAL*100)+"%";
+    if(placedCount===TOTAL){ stopAttract(); setTimeout(finish, 450); }
+    else { interacted=false; startAttract(); }   /* guide the next piece */
+  }
+
+  /* ---- drag (the only way the puzzle advances) ---- */
+  function pointer(e){ var t=(e.touches&&e.touches[0])||(e.changedTouches&&e.changedTouches[0])||e; return {x:t.clientX,y:t.clientY}; }
+  function bindPiece(p){
+    p.el.addEventListener("touchstart",function(e){ down(p,e); },false);
+    p.el.addEventListener("mousedown",function(e){ down(p,e); },false);
+  }
+  function down(p,e){
+    if(!started||p.placed) return;
+    interacted=true; stopAttract();
+    active=p; p.el.className="piece drag"; p.el.style.zIndex=(++zTop);
+    var pt=pointer(e), sr=stage.getBoundingClientRect();
+    p._gx=(pt.x-sr.left)-p.x; p._gy=(pt.y-sr.top)-p.y; e.preventDefault();
+  }
+  function move(e){
+    if(!active) return;
+    var pt=pointer(e), sr=stage.getBoundingClientRect();
+    setPos(active, (pt.x-sr.left)-active._gx, (pt.y-sr.top)-active._gy); e.preventDefault();
+  }
+  function up(e){
+    if(!active) return; var p=active; active=null;
+    var CW=S+2*M, cx=p.x+CW/2, cy=p.y+CW/2, hx=p.slotX+CW/2, hy=p.slotY+CW/2;
+    if(Math.sqrt((cx-hx)*(cx-hx)+(cy-hy)*(cy-hy)) < S*0.6){ place(p); }
+    else { p.el.className="piece anim"; setPos(p, p.trayX, p.trayY); interacted=false; startAttract(); } /* wrong -> back to tray, keep hinting */
+    if(e) e.preventDefault();
+  }
+  document.addEventListener("touchmove",move,{passive:false});
+  document.addEventListener("mousemove",move,false);
+  document.addEventListener("touchend",up,false);
+  document.addEventListener("mouseup",up,false);
+
+  function finish(){ stopAttract(); doneEl.className="show"; }
+  cta.addEventListener("click",function(){ var url=STORE[platform()];
+    if(typeof mraid!=="undefined"&&mraid&&typeof mraid.open==="function"){ mraid.open(url); } else if(window.open){ window.open(url,"_blank"); } },false);
+
+  function showAd(){ if(started) return; started=true; layout(); startAttract(); }
+  function pause(){ stopAttract(); }
+  function resume(){ if(started && placedCount<TOTAL && doneEl.className.indexOf("show")===-1 && !active){ interacted=false; startAttract(); } }
+  function onViewableChange(v){ if(v){ started?resume():showAd(); } else pause(); }
+  function onSdkReady(){ mraid.addEventListener("viewableChange",onViewableChange); if(mraid.isViewable()) showAd(); }
+  function boot(){ if(typeof mraid==="undefined"){ showAd(); return; }
+    if(mraid.getState()==="loading"){ mraid.addEventListener("ready",onSdkReady); } else onSdkReady(); }
+  document.addEventListener("visibilitychange",function(){ if(document.hidden) pause(); else resume(); },false);
+  var rt=null; window.addEventListener("resize",function(){ if(!started||active) return; clearTimeout(rt); rt=setTimeout(function(){ if(placedCount<TOTAL && doneEl.className.indexOf("show")===-1){ interacted=false; layout(); startAttract(); } },250); },false);
+  boot();
+})();
+</script>
+</body></html>

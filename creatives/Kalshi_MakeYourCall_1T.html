@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en"><head><script src="mraid.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><title>Kalshi — Make Your Call</title>
+<style>
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; margin:0; padding:0; }
+  html,body{ width:100%; height:100%; overflow:hidden; background:#01201A;
+    font-family:Inter,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; color:#fff; -webkit-user-select:none; user-select:none; }
+  #stage{ position:absolute; top:0; left:0; right:0; bottom:0;
+    display:-webkit-box; display:-webkit-flex; display:flex; -webkit-box-align:center; -webkit-align-items:center; align-items:center; -webkit-box-pack:center; -webkit-justify-content:center; justify-content:center;
+    background:radial-gradient(circle at 50% 16%, rgba(0,221,148,0.20), rgba(0,221,148,0) 58%),
+      radial-gradient(circle at 82% 92%, rgba(77,228,178,0.12), rgba(77,228,178,0) 52%),#01201A; touch-action:manipulation; }
+  #panel{ position:relative; width:100%; max-width:460px; margin:0 auto; padding:5% 7%;
+    display:-webkit-box; display:-webkit-flex; display:flex; -webkit-box-orient:vertical; -webkit-flex-direction:column; flex-direction:column; -webkit-box-align:center; -webkit-align-items:center; align-items:center; text-align:center; }
+  #logo{ width:100px; height:auto; margin:0 0 14px; display:block; } #logo path{ fill:#00DD94; }
+  .tag{ font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:#00DD94; font-weight:800; margin:0 0 12px; }
+  .icon{ font-size:38px; line-height:1; margin:0 0 10px; }
+  h1{ font-size:24px; line-height:1.25; font-weight:800; margin:0 0 6px; color:#fff; }
+  .sub{ font-size:12px; color:#86b8a6; margin:0 0 22px; }
+  .btns{ width:100%; display:-webkit-box; display:-webkit-flex; display:flex; gap:12px; }
+  .pick{ -webkit-box-flex:1; -webkit-flex:1; flex:1; cursor:pointer; border-radius:18px; padding:18px 10px 16px;
+    border:1px solid rgba(255,255,255,0.14); background:rgba(255,255,255,0.05);
+    -webkit-transition:-webkit-transform .12s ease,background .15s,border-color .15s; transition:transform .12s ease,background .15s,border-color .15s; }
+  .pick:active{ -webkit-transform:scale(.97); transform:scale(.97); }
+  .pick .lab{ font-size:22px; font-weight:800; letter-spacing:.04em; }
+  .pick .price{ font-size:13px; font-weight:700; margin-top:4px; }
+  .pick.yes .lab{ color:#00DD94; } .pick.yes .price{ color:#7fd9bd; }
+  .pick.no .lab{ color:#ff8f8f; } .pick.no .price{ color:#d9a3a3; }
+  .pick.yes.sel{ background:rgba(0,221,148,0.16); border-color:#00DD94; } .pick.no.sel{ background:rgba(255,120,120,0.14); border-color:#ff8f8f; }
+  .pick.dim{ opacity:.38; }
+
+  #result{ display:none; width:100%; -webkit-flex-direction:column; flex-direction:column; -webkit-box-align:center; -webkit-align-items:center; align-items:center; margin-top:20px; }
+  #result.show{ display:-webkit-box; display:-webkit-flex; display:flex; }
+  .rlead{ font-size:13px; color:#9fcab9; font-weight:700; }
+  .payline{ font-size:15px; color:#bfeede; margin:8px 0 0; line-height:1.45; }
+  .payline b{ color:#fff; } .paybig{ font-size:44px; font-weight:800; color:#00DD94; text-shadow:0 0 30px rgba(0,221,148,0.35); margin:6px 0 2px; letter-spacing:-.02em; }
+
+  .etagline{ font-size:18px; font-weight:800; letter-spacing:.01em; text-transform:uppercase; color:#fff; margin:18px 0 2px; }
+  #cta{-webkit-animation:ctabounce 1.5s ease-in-out infinite;animation:ctabounce 1.5s ease-in-out infinite;  margin:10px auto 0; padding:15px 32px; border:0; border-radius:999px; font-family:inherit; font-weight:800; font-size:17px;
+    color:#01201A; background:#00DD94; box-shadow:0 8px 24px rgba(0,221,148,0.35); cursor:pointer; -webkit-transition:-webkit-transform .1s; transition:transform .1s; }
+  #cta:active{ -webkit-transform:scale(.97); transform:scale(.97); }
+  .legal{ margin-top:14px; font-size:8px; letter-spacing:.01em; color:#5f8a7a; line-height:1.45; max-width:360px; } .legal b{ color:#86b8a6; font-weight:700; }
+  @media (orientation:landscape){ #panel{ max-width:620px; padding:2.5% 6%; } #logo{ width:80px; margin-bottom:8px; } .icon{ display:none; } h1{ font-size:20px; } .sub{ margin-bottom:14px; } .btns{ max-width:520px; } }
+  @media (prefers-reduced-motion:reduce){ *{ -webkit-transition:none!important; transition:none!important; } }
+@-webkit-keyframes ctabounce{0%,100%{-webkit-transform:translateY(0);}50%{-webkit-transform:translateY(-6px);}}@keyframes ctabounce{0%,100%{transform:translateY(0);box-shadow:0 8px 22px rgba(0,221,148,.45);}50%{transform:translateY(-6px);box-shadow:0 16px 34px rgba(0,221,148,.75);}}
+</style>
+</head><body><div id="stage"><div id="panel">
+  <svg id="logo" viewBox="0 0 772 226" xmlns="http://www.w3.org/2000/svg" aria-label="Kalshi"><path d="M255.677 58.1911C210.683 58.1911 183.381 78.5114 181.206 113.922H228.062C229.924 100.374 238.611 93.2917 253.814 93.2917C269.018 93.2917 277.396 100.064 277.088 110.842C276.775 119.156 271.501 122.852 258.16 124.7L238.923 127.164C195.484 132.398 175.002 148.717 175.002 177.967C175.002 207.218 195.48 226 229.611 226C251.331 226 267.776 218.302 278.017 203.522V222.61H326.422V117.924C326.422 78.5114 302.532 58.1911 255.677 58.1911ZM245.44 192.437C231.478 192.437 223.72 186.281 223.72 174.887C223.72 164.109 230.545 158.875 249.473 156.105L258.16 154.873C265.845 153.8 272.17 152.274 277.396 150.131V166.267C277.396 181.663 264.368 192.437 245.44 192.437ZM343.488 3.38607H393.135V222.61H343.488V3.38607ZM105.23 105.628L179.66 222.61H115.118L54.3009 121.934V222.61H0V3.38607H54.3009V99.102L119.464 3.38607H177.489L105.23 105.628ZM716.145 26.1705C716.145 12.0062 728.557 0 744.073 0C759.588 0 772 12.0062 772 26.1705C772 40.3347 759.588 52.3409 744.073 52.3409C728.557 52.3409 716.145 40.6407 716.145 26.1705ZM544.868 172.423C544.868 208.446 518.494 225.996 474.743 225.996C430.991 225.996 403.997 206.908 402.447 172.113H448.369C450.232 185.351 456.435 192.743 474.434 192.743C489.95 192.743 497.395 186.587 497.395 177.347C497.395 168.107 488.396 163.489 465.747 160.107C422.616 154.257 405.242 141.631 405.242 109.304C405.242 75.1293 436.582 58.1911 471.643 58.1911C509.186 58.1911 536.493 71.4293 540.218 108.688H495.225C493.054 96.9877 486.225 91.1376 471.951 91.1376C458.61 91.1376 451.161 97.2937 451.161 105.608C451.161 114.844 458.61 118.23 480.638 121.31C523.148 127.16 544.868 137.934 544.868 172.423ZM719.249 61.5771H768.896V222.61H719.249V61.5771ZM702.183 115.77V222.61H652.536V124.39C652.536 107.146 645.399 98.2197 629.884 98.2197C614.368 98.2197 603.51 108.072 603.51 127.47V222.61H553.863V3.38607H603.51V85.5617C611.32 70.1734 627.761 58.1911 651.603 58.1911C681.393 58.1911 702.179 76.9734 702.179 115.766L702.183 115.77Z"/></svg>
+  <div class="tag">Prediction markets</div>
+  <div class="icon" id="icon">🚀</div>
+  <h1 id="q">Will Bitcoin close above $100k this year?</h1>
+  <div class="sub" id="sub">One tap. Make your call.</div>
+  <div class="btns" id="btns">
+    <button class="pick yes" id="pyes"><div class="lab">YES</div><div class="price">72&cent;</div></button>
+    <button class="pick no" id="pno"><div class="lab">NO</div><div class="price">28&cent;</div></button>
+  </div>
+  <div id="result">
+    <div class="rlead" id="rlead">You called YES.</div>
+    <div class="paybig" id="paybig">$13.89</div>
+    <div class="payline">If you&rsquo;re right, <b>$10</b> pays out <b id="payinline">$13.89</b>.<br>That&rsquo;s the market &mdash; real, and live right now.</div>
+    <div class="etagline">Trade on anything</div>
+    <button id="cta">Sign Up Today</button>
+    <div class="legal">Restrictions and eligibility requirements apply. Event contract trading involves significant risk and is not appropriate for everyone. Please carefully consider if it&rsquo;s appropriate for you in light of your personal financial circumstances. Prices shown are not be live and are subject to change. Certain products unavailable in some jurisdictions. Federally regulated event contract exchange, see kalshi.com/regulatory for more info. User must be 18+ to register and trade. Ad may contain AI-generated imagery.</div>
+  </div>
+</div></div>
+<script>
+/* ============================================================
+ * Kalshi — "Make Your Call" 1-tap baseline.
+ * Tap YES or NO on a live market -> payout reveal -> CTA.
+ * Lowest-friction concept; control for the A/B matrix.
+ * MRAID 3.0, ES5. Verb: "make your call"/"trade", never "bet".
+ * ============================================================ */
+(function(){
+  "use strict";
+  var STORE={ ios:"https://apps.apple.com/us/app/kalshi/id1632713844",
+    android:"https://play.google.com/store/apps/details?id=com.kalshi.mobile" };
+  function platform(){ var ua=navigator.userAgent||""; if(/iPhone|iPad|iPod/i.test(ua))return "ios"; return "android"; }
+
+  var YES_CENTS=72, NO_CENTS=28;
+  var pyes=document.getElementById("pyes"), pno=document.getElementById("pno"),
+      subEl=document.getElementById("sub"), resEl=document.getElementById("result"),
+      rlead=document.getElementById("rlead"), paybig=document.getElementById("paybig"),
+      payinline=document.getElementById("payinline"), cta=document.getElementById("cta");
+  var started=false, done=false;
+
+  function pick(side){
+    if(!started||done) return; done=true;
+    var cents = side==="YES"?YES_CENTS:NO_CENTS;
+    var payout=(10/(cents/100)).toFixed(2);
+    (side==="YES"?pyes:pno).className="pick "+(side==="YES"?"yes":"no")+" sel";
+    (side==="YES"?pno:pyes).className="pick "+(side==="YES"?"no":"yes")+" dim";
+    subEl.style.display="none";
+    rlead.innerHTML="You called "+side+".";
+    paybig.innerHTML="$"+payout;
+    payinline.innerHTML="$"+payout;
+    resEl.className="show";
+  }
+  pyes.onclick=function(){ pick("YES"); };
+  pno.onclick=function(){ pick("NO"); };
+
+  cta.addEventListener("click",function(){ var url=STORE[platform()];
+    if(typeof mraid!=="undefined"&&mraid&&typeof mraid.open==="function"){ mraid.open(url); } else if(window.open){ window.open(url,"_blank"); } },false);
+
+  function showAd(){ if(started) return; started=true; }
+  function onViewableChange(v){ if(v && !started) showAd(); }
+  function onSdkReady(){ mraid.addEventListener("viewableChange",onViewableChange); if(mraid.isViewable()) showAd(); }
+  function boot(){ if(typeof mraid==="undefined"){ showAd(); return; }
+    if(mraid.getState()==="loading"){ mraid.addEventListener("ready",onSdkReady); } else { onSdkReady(); } }
+  boot();
+})();
+</script>
+</body></html>

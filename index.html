@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalshi — Top Performers by ROAS</title>
+<style>
+  :root{ --bg:#0A0F0D; --panel:#0F1613; --line:#1E2A25; --mint:#00E08A; --mint2:#16E39C; --ink:#EAF3EF; --dim:#8CA69B; --amber:#F5C451; }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ background:radial-gradient(1100px 560px at 50% -10%, rgba(0,224,138,.10), transparent 60%), var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif; -webkit-font-smoothing:antialiased; }
+  header{ text-align:center; padding:42px 20px 8px; }
+  .brand{ font-size:32px; font-weight:800; letter-spacing:-.02em; color:var(--mint); }
+  h1{ font-size:24px; font-weight:800; letter-spacing:-.02em; margin:8px 0 6px; }
+  .sub{ color:var(--dim); font-size:13.5px; max-width:640px; margin:0 auto; line-height:1.5; }
+  .stat{ display:inline-flex; gap:14px; margin:18px auto 0; flex-wrap:wrap; justify-content:center; }
+  .stat .c{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:11px 17px; }
+  .stat b{ display:block; font-size:19px; color:var(--mint2); } .stat span{ font-size:10.5px; color:var(--dim); text-transform:uppercase; letter-spacing:.05em; }
+  .note{ color:var(--dim); font-size:11.5px; margin-top:10px; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(250px,1fr)); gap:20px; max-width:1300px; margin:28px auto; padding:0 22px 60px; }
+  .card{ background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:13px 13px 13px; display:flex; flex-direction:column; align-items:center; }
+  .card.hero{ border-color:rgba(0,224,138,.55); box-shadow:0 0 0 1px rgba(0,224,138,.25), 0 16px 44px rgba(0,224,138,.12); }
+  .vhook{ width:100%; display:flex; align-items:center; gap:7px; background:#0B120F; border:1px solid var(--line); border-radius:10px; padding:6px 9px; margin-bottom:9px; }
+  .vhook .play{ flex:0 0 auto; width:16px; height:16px; border-radius:50%; background:var(--mint2); position:relative; }
+  .vhook .play:after{ content:""; position:absolute; left:5px; top:4px; border-left:6px solid #04140E; border-top:4px solid transparent; border-bottom:4px solid transparent; }
+  .vhook .vt{ font-size:10.5px; color:var(--dim); line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .vhook .vt b{ color:#CFE6DC; font-weight:700; }
+  .stand{ background:rgba(0,224,138,.08); border-color:rgba(0,224,138,.3); }
+  .stand .vt{ color:var(--mint2); }
+  .phone{ position:relative; width:100%; aspect-ratio:1 / 2; border-radius:22px; background:#000; border:6px solid #171f1b;
+    box-shadow:0 12px 32px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.03); overflow:hidden; }
+  .phone .notch{ position:absolute; top:5px; left:50%; transform:translateX(-50%); width:60px; height:12px; background:#0b0b0b; border-radius:0 0 9px 9px; z-index:3; }
+  .phone iframe{ position:absolute; top:0; left:0; width:216%; height:216%; border:0; background:#000; transform:scale(.463); transform-origin:top left; }
+  .meta{ width:100%; margin-top:11px; }
+  .row1{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .title{ font-size:15px; font-weight:800; letter-spacing:-.01em; }
+  .rk{ font-size:10px; font-weight:800; color:#04140E; background:linear-gradient(180deg,var(--amber),#D9A72E); padding:3px 8px; border-radius:999px; white-space:nowrap; }
+  .rk.g{ background:#22302A; color:var(--mint2); }
+  .tag{ margin-top:4px; color:var(--dim); font-size:11.5px; }
+  .stats{ display:flex; gap:7px; margin-top:10px; }
+  .stats .s{ flex:1; background:#0B120F; border:1px solid var(--line); border-radius:10px; padding:7px 4px; text-align:center; }
+  .stats .s b{ display:block; font-size:14px; font-weight:800; } .stats .s.roas b{ color:var(--mint2); }
+  .stats .s span{ font-size:8.5px; color:var(--dim); text-transform:uppercase; letter-spacing:.03em; }
+  .foot{ text-align:center; color:var(--dim); font-size:12px; padding:0 20px 50px; line-height:1.6; }
+</style></head>
+<body>
+<header>
+  <div class="brand">Kalshi</div>
+  <h1>Top Performers by ROAS</h1>
+  <p class="sub">Unity Ads · NFL Sept 2026 · sorted by D1 Total ROAS. Each is a <b style="color:#CFE6DC">video hook → interactive end card</b> combo (a couple run standalone). Tap any phone to try the end card live.</p>
+  <div class="stat">
+    <div class="c"><b>$971K</b><span>Account spend</span></div>
+    <div class="c"><b>33.3% D1</b><span>Overall ROAS</span></div>
+    <div class="c"><b>328% D1</b><span>Top · Free55 (25/55)</span></div>
+  </div>
+  <p class="note">Spend / D0 / D1 Total ROAS shown per pack · source: Unity creative-pack breakdown.</p>
+</header>
+<div class="grid" id="grid"></div>
+<p class="foot">Built by Alon Haliva · Unity Ads · Kalshi. 18+ · see kalshi.com/regulatory.</p>
+<script>
+var C=[
+ {f:"Kalshi_Free55_V03_Tap.html",             t:"Free55 · $25→$55",   v:"62s hook · 720×1280",              d0:"144.8%", d1:"328.4%", sp:"$122",   cls:"hero", rk:"#1 · 25/55"},
+ {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"Bakari · In The Wild 12s",         d0:"213.2%", d1:"213.2%", sp:"$297"},
+ {f:"Kalshi_Up2000_Square_V05_Interactive.html",t:"$2000 On Us · Sq V05", v:"65s hook · 1080×1920",         d0:"9.6%",   d1:"207.1%", sp:"$360"},
+ {f:"Kalshi_Football_Matchup_2T.html",        t:"Football Matchup",   v:"TikTok · In The Wild B 12s",       d0:"124.0%", d1:"202.4%", sp:"$679"},
+ {f:"Kalshi_ForecastSlider_Drag.html",        t:"Forecast Slider",    v:"Monkeyfootball 25s",               d0:"102.8%", d1:"170.2%", sp:"$193"},
+ {f:"Kalshi_Football_Matchup_2T.html",        t:"Football Matchup",   v:"Taylor · Packers 29s",             d0:"94.0%",  d1:"96.4%",  sp:"$192"},
+ {f:"Kalshi_Up2000_Square_V04_Interactive.html",t:"$2000 On Us · Sq V04", v:"animation2 62s",               d0:"0.0%",   d1:"89.2%",  sp:"$322"},
+ {f:"Kalshi_1PM_Window_Tap.html",             t:"1PM Window",         v:"Sportsbook Fees endcard 38s",      d0:"85.0%",  d1:"85.0%",  sp:"$170", tag25:1},
+ {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"Bakari · Snapchat 12s",            d0:"34.1%",  d1:"68.4%",  sp:"$3,626"},
+ {f:"Kalshi_Late_Window_Tap.html",            t:"Late Window",        v:"NFL Spanish Hook 74s",             d0:"75.1%",  d1:"66.8%",  sp:"$1,457", tag25:1},
+ {f:"Kalshi_LogoPuzzle_Drag.html",            t:"Logo Puzzle",        v:"STANDALONE",                        d0:"43.7%",  d1:"64.5%",  sp:"$32,064"},
+ {f:"Kalshi_Sunday_Biggest_Tap.html",         t:"Sunday's Biggest",   v:"STANDALONE",                        d0:"45.6%",  d1:"52.1%",  sp:"$4,561", tag25:1}
+];
+var g=document.getElementById("grid");
+C.forEach(function(c){
+  var card=document.createElement("div"); card.className="card"+(c.cls?" "+c.cls:"");
+  var stand=(c.v==="STANDALONE");
+  var hook = stand
+    ? '<div class="vhook stand"><span class="play"></span><span class="vt"><b>Standalone playable</b></span></div>'
+    : '<div class="vhook"><span class="play"></span><span class="vt">Video hook: <b>'+c.v+'</b> → IEC</span></div>';
+  var rk = c.rk ? '<span class="rk">'+c.rk+'</span>' : (c.tag25?'<span class="rk g">25/25</span>':'');
+  card.innerHTML=hook+
+    '<div class="phone"><div class="notch"></div><iframe loading="lazy" src="creatives/'+c.f+'?v=1" title="'+c.t+'"></iframe></div>'+
+    '<div class="meta"><div class="row1"><span class="title">'+c.t+'</span>'+rk+'</div>'+
+    '<div class="tag">'+(stand?'Standalone · in-unit tap':'Video + Interactive End Card')+'</div>'+
+    '<div class="stats"><div class="s"><b>'+c.sp+'</b><span>Spend</span></div>'+
+      '<div class="s"><b>'+c.d0+'</b><span>D0 ROAS</span></div>'+
+      '<div class="s roas"><b>'+c.d1+'</b><span>D1 ROAS</span></div></div></div>';
+  g.appendChild(card);
+});
+</script>
+</body></html>
