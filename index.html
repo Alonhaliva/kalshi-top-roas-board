@@ -77,13 +77,12 @@ C.forEach(function(c){
     : '<div class="vhook"><span class="play"></span><span class="vt">Video: <b>'+c.v+'</b> → IEC</span></div>';
   var rk = c.rk ? '<span class="rk'+(c.rk.indexOf('#1')>-1?'':' g')+'">'+c.rk+'</span>' : (c.rep?'<span class="rk g">25/55 · NEW</span>':'');
   card.innerHTML=hook+
-    '<div class="phone"><div class="notch"></div><iframe loading="lazy" src="creatives/'+c.f+'?v=4" title="'+c.t+'"></iframe></div>'+
+    '<div class="phone"><div class="notch"></div><iframe loading="lazy" src="creatives/'+c.f+'?v=5" title="'+c.t+'"></iframe></div>'+
     '<div class="meta"><div class="row1"><span class="title">'+c.t+'</span>'+rk+'</div>'+
     '<div class="tag">'+(c.note?c.note:(stand?'Standalone · in-unit tap':'Video + Interactive End Card'))+'</div>'+
-    '<div class="stats"><div class="s"><b>'+c.sp+'</b><span>Spend</span></div>'+
-      '<div class="s"><b>'+c.d1+'</b><span>D1</span></div>'+
-      '<div class="s"><b>'+c.d3+'</b><span>D3</span></div>'+
-      '<div class="s hot"><b>'+c.d7+'</b><span>D7</span></div></div></div>';
+    '<div class="stats"><div class="s"><b>'+c.d1+'</b><span>D1 ROAS</span></div>'+
+      '<div class="s"><b>'+c.d3+'</b><span>D3 ROAS</span></div>'+
+      '<div class="s hot"><b>'+c.d7+'</b><span>D7 ROAS</span></div></div></div>';
   g.appendChild(card);
 });
 </script>
