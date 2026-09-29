@@ -59,15 +59,13 @@ var C=[
  {f:"Kalshi_Free55_V03_Tap.html",             t:"Free55 · $25→$55",   v:"62s hook · 720×1280",              d0:"144.8%", d1:"328.4%", sp:"$122",   cls:"hero", rk:"#1 · 25/55"},
  {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"Bakari · In The Wild 12s",         d0:"213.2%", d1:"213.2%", sp:"$297"},
  {f:"Kalshi_Up2000_Square_V05_Interactive.html",t:"$2000 On Us · Sq V05", v:"65s hook · 1080×1920",         d0:"9.6%",   d1:"207.1%", sp:"$360"},
- {f:"Kalshi_Football_Matchup_2T.html",        t:"Football Matchup",   v:"TikTok · In The Wild B 12s",       d0:"124.0%", d1:"202.4%", sp:"$679"},
  {f:"Kalshi_ForecastSlider_Drag.html",        t:"Forecast Slider",    v:"Monkeyfootball 25s",               d0:"102.8%", d1:"170.2%", sp:"$193"},
- {f:"Kalshi_Football_Matchup_2T.html",        t:"Football Matchup",   v:"Taylor · Packers 29s",             d0:"94.0%",  d1:"96.4%",  sp:"$192"},
  {f:"Kalshi_Up2000_Square_V04_Interactive.html",t:"$2000 On Us · Sq V04", v:"animation2 62s",               d0:"0.0%",   d1:"89.2%",  sp:"$322"},
- {f:"Kalshi_1PM_Window_Tap.html",             t:"1PM Window",         v:"Sportsbook Fees endcard 38s",      d0:"85.0%",  d1:"85.0%",  sp:"$170", tag25:1},
  {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"Bakari · Snapchat 12s",            d0:"34.1%",  d1:"68.4%",  sp:"$3,626"},
- {f:"Kalshi_Late_Window_Tap.html",            t:"Late Window",        v:"NFL Spanish Hook 74s",             d0:"75.1%",  d1:"66.8%",  sp:"$1,457", tag25:1},
  {f:"Kalshi_LogoPuzzle_Drag.html",            t:"Logo Puzzle",        v:"STANDALONE",                        d0:"43.7%",  d1:"64.5%",  sp:"$32,064"},
- {f:"Kalshi_Sunday_Biggest_Tap.html",         t:"Sunday's Biggest",   v:"STANDALONE",                        d0:"45.6%",  d1:"52.1%",  sp:"$4,561", tag25:1}
+ {f:"Kalshi_Free55_V02_Tap.html",  t:"Free55 (25/55)", v:"STANDALONE",           d0:"—", d1:"—", sp:"NEW", rep:1, note:"Standalone · replaces Sunday's Biggest"},
+ {f:"Kalshi_Free55_V05_Tap.html",  t:"Free55 (25/55)", v:"NFL Spanish Hook 74s", d0:"—", d1:"—", sp:"NEW", rep:1, note:"Video + IEC · replaces Late Window"},
+ {f:"Kalshi_Free55_V04_Tap.html",  t:"Free55 (25/55)", v:"Sportsbook Fees 38s",  d0:"—", d1:"—", sp:"NEW", rep:1, note:"Video + IEC · replaces 1PM Window"}
 ];
 var g=document.getElementById("grid");
 C.forEach(function(c){
@@ -76,11 +74,11 @@ C.forEach(function(c){
   var hook = stand
     ? '<div class="vhook stand"><span class="play"></span><span class="vt"><b>Standalone playable</b></span></div>'
     : '<div class="vhook"><span class="play"></span><span class="vt">Video hook: <b>'+c.v+'</b> → IEC</span></div>';
-  var rk = c.rk ? '<span class="rk">'+c.rk+'</span>' : (c.tag25?'<span class="rk g">25/25</span>':'');
+  var rk = c.rk ? '<span class="rk">'+c.rk+'</span>' : (c.rep?'<span class="rk g">25/55 · NEW</span>':(c.tag25?'<span class="rk g">25/25</span>':''));
   card.innerHTML=hook+
-    '<div class="phone"><div class="notch"></div><iframe loading="lazy" src="creatives/'+c.f+'?v=1" title="'+c.t+'"></iframe></div>'+
+    '<div class="phone"><div class="notch"></div><iframe loading="lazy" src="creatives/'+c.f+'?v=2" title="'+c.t+'"></iframe></div>'+
     '<div class="meta"><div class="row1"><span class="title">'+c.t+'</span>'+rk+'</div>'+
-    '<div class="tag">'+(stand?'Standalone · in-unit tap':'Video + Interactive End Card')+'</div>'+
+    '<div class="tag">'+(c.note?c.note:(stand?'Standalone · in-unit tap':'Video + Interactive End Card'))+'</div>'+
     '<div class="stats"><div class="s"><b>'+c.sp+'</b><span>Spend</span></div>'+
       '<div class="s"><b>'+c.d0+'</b><span>D0 ROAS</span></div>'+
       '<div class="s roas"><b>'+c.d1+'</b><span>D1 ROAS</span></div></div></div>';
