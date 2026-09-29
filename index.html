@@ -9,7 +9,7 @@
   header{ text-align:center; padding:42px 20px 8px; }
   .brand{ font-size:32px; font-weight:800; letter-spacing:-.02em; color:var(--mint); }
   h1{ font-size:24px; font-weight:800; letter-spacing:-.02em; margin:8px 0 6px; }
-  .sub{ color:var(--dim); font-size:13.5px; max-width:640px; margin:0 auto; line-height:1.5; }
+  .sub{ color:var(--dim); font-size:13.5px; max-width:660px; margin:0 auto; line-height:1.5; }
   .stat{ display:inline-flex; gap:14px; margin:18px auto 0; flex-wrap:wrap; justify-content:center; }
   .stat .c{ background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:11px 17px; }
   .stat b{ display:block; font-size:19px; color:var(--mint2); } .stat span{ font-size:10.5px; color:var(--dim); text-transform:uppercase; letter-spacing:.05em; }
@@ -22,8 +22,7 @@
   .vhook .play:after{ content:""; position:absolute; left:5px; top:4px; border-left:6px solid #04140E; border-top:4px solid transparent; border-bottom:4px solid transparent; }
   .vhook .vt{ font-size:10.5px; color:var(--dim); line-height:1.2; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .vhook .vt b{ color:#CFE6DC; font-weight:700; }
-  .stand{ background:rgba(0,224,138,.08); border-color:rgba(0,224,138,.3); }
-  .stand .vt{ color:var(--mint2); }
+  .stand{ background:rgba(0,224,138,.08); border-color:rgba(0,224,138,.3); } .stand .vt{ color:var(--mint2); }
   .phone{ position:relative; width:100%; aspect-ratio:1 / 2; border-radius:22px; background:#000; border:6px solid #171f1b;
     box-shadow:0 12px 32px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.03); overflow:hidden; }
   .phone .notch{ position:absolute; top:5px; left:50%; transform:translateX(-50%); width:60px; height:12px; background:#0b0b0b; border-radius:0 0 9px 9px; z-index:3; }
@@ -34,38 +33,40 @@
   .rk{ font-size:10px; font-weight:800; color:#04140E; background:linear-gradient(180deg,var(--amber),#D9A72E); padding:3px 8px; border-radius:999px; white-space:nowrap; }
   .rk.g{ background:#22302A; color:var(--mint2); }
   .tag{ margin-top:4px; color:var(--dim); font-size:11.5px; }
-  .stats{ display:flex; gap:7px; margin-top:10px; }
-  .stats .s{ flex:1; background:#0B120F; border:1px solid var(--line); border-radius:10px; padding:7px 4px; text-align:center; }
-  .stats .s b{ display:block; font-size:14px; font-weight:800; } .stats .s.roas b{ color:var(--mint2); }
-  .stats .s span{ font-size:8.5px; color:var(--dim); text-transform:uppercase; letter-spacing:.03em; }
+  .stats{ display:flex; gap:5px; margin-top:10px; }
+  .stats .s{ flex:1; background:#0B120F; border:1px solid var(--line); border-radius:9px; padding:6px 3px; text-align:center; }
+  .stats .s b{ display:block; font-size:13px; font-weight:800; } .stats .s.hot b{ color:var(--mint2); }
+  .stats .s span{ font-size:8px; color:var(--dim); text-transform:uppercase; letter-spacing:.02em; }
   .foot{ text-align:center; color:var(--dim); font-size:12px; padding:0 20px 50px; line-height:1.6; }
 </style></head>
 <body>
 <header>
   <div class="brand">Kalshi</div>
   <h1>Top Performers by ROAS</h1>
-  <p class="sub">Unity Ads · NFL Sept 2026 · sorted by D1 Total ROAS. Each is a <b style="color:#CFE6DC">video hook → interactive end card</b> combo (a couple run standalone). Tap any phone to try the end card live.</p>
+  <p class="sub">Unity Ads · <b style="color:#CFE6DC">Sep 8–29</b> · sorted by D1 ROAS, with D3 &amp; D7. Each is a <b style="color:#CFE6DC">video hook → interactive end card</b> (a few run standalone). Tap any phone to try the end card.</p>
   <div class="stat">
-    <div class="c"><b>$971K</b><span>Account spend</span></div>
-    <div class="c"><b>33.3% D1</b><span>Overall ROAS</span></div>
+    <div class="c"><b>$2.26M</b><span>Account spend</span></div>
+    <div class="c"><b>41,799</b><span>Installs</span></div>
+    <div class="c"><b>90.5% D7</b><span>Overall ROAS</span></div>
     <div class="c"><b>328% D1</b><span>Top · Free55 (25/55)</span></div>
   </div>
-  <p class="note">Spend / D0 / D1 Total ROAS shown per pack · source: Unity creative-pack breakdown.</p>
+  <p class="note">Spend / D1 / D3 / D7 Total ROAS shown per pack · source: Unity creative-pack breakdown (Sep 8–29).</p>
 </header>
 <div class="grid" id="grid"></div>
 <p class="foot">Built by Alon Haliva · Unity Ads · Kalshi. 18+ · see kalshi.com/regulatory.</p>
 <script>
 var C=[
- {f:"Kalshi_Free55_V03_Tap.html",             t:"Free55 · $25→$55",   v:"62s hook · 720×1280",              d0:"144.8%", d1:"328.4%", sp:"$122",   cls:"hero", rk:"#1 · 25/55"},
- {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"Bakari · In The Wild 12s",         d0:"213.2%", d1:"213.2%", sp:"$297"},
- {f:"Kalshi_Up2000_Square_V05_Interactive.html",t:"$2000 On Us · Sq V05", v:"65s hook · 1080×1920",         d0:"9.6%",   d1:"207.1%", sp:"$360"},
- {f:"Kalshi_ForecastSlider_Drag.html",        t:"Forecast Slider",    v:"Monkeyfootball 25s",               d0:"102.8%", d1:"170.2%", sp:"$193"},
- {f:"Kalshi_Up2000_Square_V04_Interactive.html",t:"$2000 On Us · Sq V04", v:"animation2 62s",               d0:"0.0%",   d1:"89.2%",  sp:"$322"},
- {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"Bakari · Snapchat 12s",            d0:"34.1%",  d1:"68.4%",  sp:"$3,626"},
- {f:"Kalshi_LogoPuzzle_Drag.html",            t:"Logo Puzzle",        v:"STANDALONE",                        d0:"43.7%",  d1:"64.5%",  sp:"$32,064"},
- {f:"Kalshi_Free55_V02_Tap.html",  t:"Free55 (25/55)", v:"STANDALONE",           d0:"—", d1:"—", sp:"NEW", rep:1, note:"Standalone · replaces Sunday's Biggest"},
- {f:"Kalshi_Free55_V05_Tap.html",  t:"Free55 (25/55)", v:"NFL Spanish Hook 74s", d0:"—", d1:"—", sp:"NEW", rep:1, note:"Video + IEC · replaces Late Window"},
- {f:"Kalshi_Free55_V04_Tap.html",  t:"Free55 (25/55)", v:"Sportsbook Fees 38s",  d0:"—", d1:"—", sp:"NEW", rep:1, note:"Video + IEC · replaces 1PM Window"}
+ {f:"Kalshi_Free55_V03_Tap.html",             t:"Free55 · $25→$55",   v:"62s hook · 720×1280",     sp:"$122",   d1:"328.4%", d3:"598.1%", d7:"—",     cls:"hero", rk:"#1 · 25/55"},
+ {f:"Kalshi_ForecastSlider_Drag.html",        t:"Forecast Slider",    v:"Monkeyfootball 25s",      sp:"$1.6K",  d1:"303.7%", d3:"684.0%", d7:"283.7%", rk:"D7 star"},
+ {f:"Kalshi_Up2000_Square_V05_Interactive.html",t:"$2000 On Us · Sq V05", v:"65s hook · 1080×1920", sp:"$360",   d1:"207.1%", d3:"266.9%", d7:"—"},
+ {f:"Kalshi_LogoPuzzle_Drag.html",            t:"Logo Puzzle",        v:"STANDALONE",              sp:"$151K",  d1:"131.8%", d3:"171.2%", d7:"236.4%", rk:"D7 star"},
+ {f:"Kalshi_Up2000_Square_V04_Interactive.html",t:"$2000 On Us · Sq V04", v:"animation2 62s",      sp:"$322",   d1:"89.2%",  d3:"—",      d7:"—"},
+ {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"STANDALONE",              sp:"$1.68M", d1:"58.6%",  d3:"81.2%",  d7:"85.7%", rk:"#1 spend"},
+ {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"Bakari · In The Wild 12s",sp:"$1.7K",  d1:"56.1%",  d3:"82.7%",  d7:"66.9%"},
+ {f:"Kalshi_MakeYourCall_1T.html",            t:"Make Your Call",     v:"Bakari · Snapchat 12s",   sp:"$34.2K", d1:"26.2%",  d3:"30.0%",  d7:"49.6%"},
+ {f:"Kalshi_Free55_V02_Tap.html",  t:"Free55 (25/55)", v:"STANDALONE",           sp:"NEW", d1:"—", d3:"—", d7:"—", rep:1, note:"Standalone · replaces Sunday's Biggest"},
+ {f:"Kalshi_Free55_V05_Tap.html",  t:"Free55 (25/55)", v:"NFL Spanish Hook 74s", sp:"NEW", d1:"—", d3:"—", d7:"—", rep:1, note:"Video + IEC · replaces Late Window"},
+ {f:"Kalshi_Free55_V04_Tap.html",  t:"Free55 (25/55)", v:"Sportsbook Fees 38s",  sp:"NEW", d1:"—", d3:"—", d7:"—", rep:1, note:"Video + IEC · replaces 1PM Window"}
 ];
 var g=document.getElementById("grid");
 C.forEach(function(c){
@@ -73,15 +74,16 @@ C.forEach(function(c){
   var stand=(c.v==="STANDALONE");
   var hook = stand
     ? '<div class="vhook stand"><span class="play"></span><span class="vt"><b>Standalone playable</b></span></div>'
-    : '<div class="vhook"><span class="play"></span><span class="vt">Video hook: <b>'+c.v+'</b> → IEC</span></div>';
-  var rk = c.rk ? '<span class="rk">'+c.rk+'</span>' : (c.rep?'<span class="rk g">25/55 · NEW</span>':(c.tag25?'<span class="rk g">25/25</span>':''));
+    : '<div class="vhook"><span class="play"></span><span class="vt">Video: <b>'+c.v+'</b> → IEC</span></div>';
+  var rk = c.rk ? '<span class="rk'+(c.rk.indexOf('#1')>-1?'':' g')+'">'+c.rk+'</span>' : (c.rep?'<span class="rk g">25/55 · NEW</span>':'');
   card.innerHTML=hook+
-    '<div class="phone"><div class="notch"></div><iframe loading="lazy" src="creatives/'+c.f+'?v=3" title="'+c.t+'"></iframe></div>'+
+    '<div class="phone"><div class="notch"></div><iframe loading="lazy" src="creatives/'+c.f+'?v=4" title="'+c.t+'"></iframe></div>'+
     '<div class="meta"><div class="row1"><span class="title">'+c.t+'</span>'+rk+'</div>'+
     '<div class="tag">'+(c.note?c.note:(stand?'Standalone · in-unit tap':'Video + Interactive End Card'))+'</div>'+
     '<div class="stats"><div class="s"><b>'+c.sp+'</b><span>Spend</span></div>'+
-      '<div class="s"><b>'+c.d0+'</b><span>D0 ROAS</span></div>'+
-      '<div class="s roas"><b>'+c.d1+'</b><span>D1 ROAS</span></div></div></div>';
+      '<div class="s"><b>'+c.d1+'</b><span>D1</span></div>'+
+      '<div class="s"><b>'+c.d3+'</b><span>D3</span></div>'+
+      '<div class="s hot"><b>'+c.d7+'</b><span>D7</span></div></div></div>';
   g.appendChild(card);
 });
 </script>
