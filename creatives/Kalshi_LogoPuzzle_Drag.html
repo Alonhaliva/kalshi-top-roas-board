@@ -6,7 +6,7 @@
   #stage{ position:absolute; top:0; left:0; right:0; bottom:0; overflow:hidden;
     background:radial-gradient(circle at 50% 38%, #12E39C, #00CE8E 72%); touch-action:none; }
   #pbar{ position:absolute; top:0; left:0; height:5px; width:0%; background:#FFD23F; -webkit-transition:width .35s ease; transition:width .35s ease; box-shadow:0 0 10px rgba(255,210,63,.6); z-index:20; }
-  .prompt{ position:absolute; top:0; left:0; right:0; text-align:center; padding:16px 18px 0; z-index:15; }
+  .prompt{ position:absolute; top:0; left:0; right:0; text-align:center; padding:calc(42px + env(safe-area-inset-top,0px)) 18px 0; z-index:15; }
   .prompt .big{ font-size:19px; font-weight:800; color:#01201A; letter-spacing:-.01em; }
   .prompt .small{ font-size:13px; font-weight:600; color:#0a3b2e; margin-top:3px; opacity:.85; }
 
